@@ -5,6 +5,26 @@ const dead = document.getElementById('dead');
 const enemy = document.getElementById('enemy');
 const again = document.getElementById('again');
 
+const game = {
+    ships: [
+        {
+            location: ['26', '36', '46', '56'],
+            hit: ['', '', '', '']
+        }, 
+        {
+            location: ['11', '12', '13'],
+            hit: ['', '', '']
+        }, 
+        {
+            location: ['69', '79'],
+            hit: ['', '']
+        }, 
+        {
+            location: ['32'],
+            hit: ['']
+        }
+    ],
+};
 
 const play = {
     record: 0,
@@ -41,14 +61,14 @@ const show = {
 
 const fire = (event) => {
     const target = event.target;
-    console.log(target.classList.value);
-    if (target.classList.value !== 'miss') {
-        console.log('no miss class');
+    
+    if (target.tagName === 'TD' && target.classList.value !== 'miss') {
         play.updateData = 'shot';
-    } else {
-        console.log('td have miss class');
-    };
-    show.miss(target);
+        show.miss(target);
+
+        
+    }
+    
 };
 
 const init = () => {
