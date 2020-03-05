@@ -41,8 +41,14 @@ const show = {
 
 const fire = (event) => {
     const target = event.target;
+    console.log(target.classList.value);
+    if (target.classList.value !== 'miss') {
+        console.log('no miss class');
+        play.updateData = 'shot';
+    } else {
+        console.log('td have miss class');
+    };
     show.miss(target);
-    play.updateData = 'shot';
 };
 
 const init = () => {
