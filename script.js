@@ -6,30 +6,63 @@ const enemy = document.getElementById('enemy');
 const again = document.getElementById('again');
 const header = document.querySelector('.header');
 
+
 const game = {
-    ships: [
-        {
-            location: ['26', '36', '46', '56'],
-            hit: ['', '', '', '']
-        }, 
-        {
-            location: ['11', '12', '13'],
-            hit: ['', '', '']
-        }, 
-        {
-            location: ['69', '79'],
-            hit: ['', '']
-        }, 
-        {
-            location: ['32'],
-            hit: ['']
+    ships: [],
+    shipCount: 0,
+    optionShip: {
+        count: [1, 2, 3, 4],
+        size: [4, 3, 2, 1]
+    },
+    generateShip() {
+        for (let i = 0; i < this.optionShip.count.length; i++) {
+            console.log('count: ' + this.optionShip.count[i]);
+            for (let j = 0; j < this.optionShip.count[i]; j++) {
+                console.log('size: ' + this.optionShip.size[i]);
+
+                const size = this.optionShip.size[i];
+                const ship = this.generationOptionsShip(size);
+
+                this.ships.push(ship);
+                this.shipCount++;
+            }
         }
-    ],
-    shipCount: 4
+    },
+    generateOptionsShip(shipSize) {
+        const ship = {
+            hit: [],
+            location: [] 
+    };
+
+        const direction = Math.random() < 0.5;
+        let x, y;
+
+        if (direction) {
+            x = Math.floor(Math.random() * 10);
+            console.log(x);
+            y = Math.floor(Math.random() * 10);
+            console.log(y);
+        }   else {
+            x = Math.floor(Math.random() * 10);
+            console.log(x);
+            y = Math.floor(Math.random() * 10);
+            console.log(y);
+        }
+
+        for (let i = 0; i < shipSize; i++) {
+            if (direction) {
+                ship.location.push(x + '' + (y+ i))
+            }   else {
+                ship.location.push((x + i) + '' + y)
+            }
+        }
+
+        return ship;
+    }
 };
 
 const play = {
-    record: 0,
+    record: localStorage.getItem('seaBattleRecord') || 0,
     shot: 0,
     hit: 0,
     dead: 0,
@@ -64,7 +97,7 @@ const show = {
 const fire = (event) => {
     const target = event.target;
     
-    if (target.tagName === 'TD' && target.classList.length == 0) {
+    if (target.tagName === 'TD' && target.classList.length == 0 && !game.shipCount) {
         play.updateData = 'shot';
         show.miss(target);
 
@@ -87,14 +120,14 @@ const fire = (event) => {
 
                     game.shipCount -= 1;
 
-                    if (game.shipCount < 1) {
+                    if (!game.shipCount) {
                         header.textContent = 'Игра окончена!';
                         header.style.color = 'red';
 
                         if (play.shot < play.record || play.record === 0) {
                             localStorage.setItem('seaBattleRecord', play.shot);
-                            play.updateData = 'record';
-                            
+                            play.record = play.shot;  
+                            play.render();
                         }
                         
                     }
@@ -107,6 +140,22 @@ const fire = (event) => {
 
 const init = () => {
     enemy.addEventListener('click', fire);
+    play.render();
+
+    game.generateShip();
+
+    again.addEventListener('click', () => {
+        location.reload();
+    })
+
+    record.addEventListener('dblclick', () => {
+        localStorage.clear();
+        play.record = 0;
+        play.render();
+    })
+
+    console.log(game.ships);
+    
 };
 
 init()
